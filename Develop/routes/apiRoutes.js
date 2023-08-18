@@ -2,28 +2,19 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid'); // For generating unique IDs
+const { v4: uuidv4 } = require('uuid'); 
 
 const notesFilePath = path.join(__dirname, '../db/db.json');
 
 // Read existing notes from db.json
 function readNotes() {
-    try {
-        const notesData = fs.readFileSync(notesFilePath, 'utf8');
-        return JSON.parse(notesData);
-    } catch (error) {
-        console.error("Error reading notes:", error);
-        return [];
-    }
+    const notesData = fs.readFileSync(notesFilePath, 'utf8');
+    return JSON.parse(notesData);
 }
 
-// writeNotes function with error handling
+// Write notes to db.json with error handling
 function writeNotes(notes) {
-    try {
-        fs.writeFileSync(notesFilePath, JSON.stringify(notes), 'utf8');
-    } catch (error) {
-        console.error("Error writing notes:", error);
-    }
+    fs.writeFileSync(notesFilePath, JSON.stringify(notes, null, 2), 'utf8');
 }
 
 // GET /api/notes - Return all saved notes as JSON
