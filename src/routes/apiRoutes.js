@@ -2,19 +2,19 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid'); 
+const { v4: uuidv4 } = require('uuid');
 
 const notesFilePath = path.join(__dirname, '../db/db.json');
 
 // Read existing notes from db.json
 function readNotes() {
-    const notesData = fs.readFileSync(notesFilePath, 'utf8');
-    return JSON.parse(notesData);
+  const notesData = fs.readFileSync(notesFilePath, 'utf8');
+  return JSON.parse(notesData);
 }
 
 // Write notes to db.json with error handling
 function writeNotes(notes) {
-    fs.writeFileSync(notesFilePath, JSON.stringify(notes, null, 2), 'utf8');
+  fs.writeFileSync(notesFilePath, JSON.stringify(notes, null, 2), 'utf8');
 }
 
 // GET /api/notes - Return all saved notes as JSON
@@ -36,6 +36,18 @@ router.post('/notes', (req, res) => {
   writeNotes(notes);
 
   res.json(newNote);
+});
+
+// DELETE /api/notes/:id - Delete a note by its ID
+router.delete('/notes/:id', (req, res) => {
+  const id = req.params.id;
+
+  let notes = readNotes();
+  const updatedNotes = notes.filter((note) => note.id !== id);
+  
+  writeNotes(updatedNotes);
+
+  res.sendStatus(200);
 });
 
 module.exports = router;
